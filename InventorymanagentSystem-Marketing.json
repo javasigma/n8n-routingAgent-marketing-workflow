@@ -1,0 +1,644 @@
+{
+  "name": "InventorymanagentSystem-Marketing",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Your files",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Upload Here",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf .csv .txt",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -752,
+        -224
+      ],
+      "id": "1565048b-fb8e-46af-824d-0c3f2fcc7075",
+      "name": "On form submission",
+      "webhookId": "91d37a38-4723-4d3f-a197-714f806f9824"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -48,
+        -240
+      ],
+      "id": "ed74bb57-d6a4-4abd-8724-c4ee73a917e4",
+      "name": "When chat message received",
+      "webhookId": "9605734f-9c2d-48ac-8c76-fd70799e60a5"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        },
+        "clearStore": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        -240
+      ],
+      "id": "91046534-62e3-4747-9abd-23b2e33bc82e",
+      "name": "Simple Vector Store"
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        64
+      ],
+      "id": "ec2b128f-4f97-43f1-9037-cc6857c08c65",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "modelName": "intfloat/multilingual-e5-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        352
+      ],
+      "id": "a1e3b1ab-1961-4c79-9369-38573500e628",
+      "name": "Embeddings HuggingFace Inference",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "DHcKg50kFMSZWmfr",
+          "name": "HuggingFaceApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Upload secrion",
+        "height": 560,
+        "width": 720
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -784,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "6040e751-de10-4919-a1d7-ac246d20e839",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Role: router \nYour task is to call exactly one tool based on the request .\nUse BlogwtiterAgent  for blog posts, articles long-form content, or SEO blogs. \nUse CopywriterAgent for a copy landingpage copy, product descriptions or captions. Use ColdEmailAgent for outreach, cold outreach, outbound, or prospecting emails.\n\nPass the full input context exactly as recieved. \nCall only one tool. When the tool responds, return only raw JSON output with no modifications,  no commentary, and no markdownlpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        -240
+      ],
+      "id": "fae116fd-f66b-4979-92b2-c2dd248226e6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -48
+      ],
+      "id": "ff425434-a312-43b4-a579-495dde292615",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u3kVcoWs0n2rLQiu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"required\": [\"title\", \"body\"],\n\t\"additioonalProperties\": \"false\",\n\t\t\t\"properties\":{\n\t\t\"title\": {\"type\": \"string\", \"maxlength\": 90},\n\t\t\"body\": {\"type\": \"string\"}\n\t\t\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        144
+      ],
+      "id": "b61c9a9c-8bbd-4d82-8a90-591a5731c546",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        96,
+        176
+      ],
+      "id": "03356ec1-3f47-4e95-8fbd-f0510284e95f",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u3kVcoWs0n2rLQiu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this knowledge base to answer questions from the user",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        },
+        "topK": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        288
+      ],
+      "id": "8e35d113-96ad-40c3-9ae6-b1be4338618c",
+      "name": "Simple Vector Store1"
+    },
+    {
+      "parameters": {
+        "jsCode": "function coerce(x){\n    if (!x) return null;\n    \n    // if x is a string, try to parse as JSON if fails, try to extract JSON object from string\n    if (typeof x === 'string' ){\n        try{ x = JSON.parse(x);}\n    catch {\n            const m= x.match(/\\{[\\s\\S]*\\}/);\n            if (m) { try { x - JSON.parse(m[0]); } catch {return null; } }\n            else{ return null; }\n        }\n    }\n    \n    if (Array.isArray(x)) x = x(0);\n    \n    if (x && typeof x === 'object' && x.output) x=x.output;\n    \n    if (x && typeof x=== 'object' && 'title' in x && 'body' in x){\n        return {title: String(x.title || '').trim(), body: String(x.body || '').trim()};\n    }\n    return null;\n}\n// in n8n, this function would be used in a Function node to process incoming data\n// in Run once for all Items use $input to access all input items\nconst inputItems =$input.all();\nif (inputItems.length)  return [];\n\nconst src = inputItems[0].json;\n// try multiple ways to coerce input to {title, body}\nconst out =coerce(src) || coerce(src.output);\n\nif (!out){\n    // helpful debug playload so we can see the node axtually received\nreturn [{ json: { error: 'Missing title/body', saw: src }}]; \n}\n// normalize output for downstream mapping\nreturn [{ json:  out }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -208
+      ],
+      "id": "c9e01142-ef43-4bd4-a509-05bccfb7ce3d",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "copy",
+        "path": "https://www.dropbox.com/scl/fi/zqzaxzzttklac92e98ohv/brandsamplemark1.txt.txt?rlkey=dew8vjvr0fcj672hc90j3ud5a&st=vf465f41&dl=0",
+        "toPath": "https://www.dropbox.com/scl/fi/madnrqh5denxw5vuljkep/brandsamplemark1.txt-edited.txt?rlkey=4ggnllf3jcjorfcni6ephd88t&st=ko8rb82t&dl=0"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        848,
+        -208
+      ],
+      "id": "a1934bc1-c93d-41ba-b810-e871b62b47fb",
+      "name": "Copy a file",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "FwtF2tecMnN0Kugl",
+          "name": "Dropbox account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## If google drive and google docs are available it would be better, Openai or deepseek as an embedding would also be better\n",
+        "height": 240,
+        "width": 288
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "c981919c-f19a-42f1-b3b4-f45f72f7b809",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"required\": [\"title\", \"body\"],\n\t\"additioonalProperties\": \"false\",\n\t\t\t\"properties\":{\n\t\t\"title\": {\"type\": \"string\", \"maxlength\": 500},\n\t\t\"body\": {\"type\": \"string\"}\n\t\t\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        176
+      ],
+      "id": "4136c8a9-cc6b-4b04-a715-c6c44f061906",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        688,
+        176
+      ],
+      "id": "e666a3f2-bf08-435e-9631-5f80add701f2",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u3kVcoWs0n2rLQiu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this knowledge base to answer questions from the user",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        },
+        "topK": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        432
+      ],
+      "id": "4f0cc57d-d06b-4f9c-996d-103d2a83ca6d",
+      "name": "Simple Vector Store2"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert cold email copyywriter skilled in persuasive, high-conversion outreach. Write a short, attention-grabbing email that motivates the reciepent to take action while keeping the tone friendly, proffesional, and relevant to their industry,\n\nInstructions:\n\nCreate a title (maximium 10 words) that is catchy and alligned with the reciepent's goals or pain points.\n\nCreate a body (60- 120 words) that is:\n\nBriefly, introduces yourself or your company. Highlights a clear pain point or opputinity for the recipient. Ends with a friendly, action-oriented closing, Returns the response strictly in the following JSON format:\n{\n\t\"title\": \"<yor title here>\",\n\t\"body\": \"<your email body here witb appropriate line breaks>\"\n}\n\nDo not include commentarry, explanations, markdown, or any other formatting outside this JSON.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        -16
+      ],
+      "id": "8cb36c05-643f-4fd8-9474-5d2cbcd91b76",
+      "name": "Copywriting"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert blog writer specializing in engaging well-structured, and SEO-friendly content. Your task is to write a blog post that educates and provides value to audience while matching tone and style best suited for their nitch or industry.\n\nInstructions:\nCreate a title (maximum 12 words)attention-grabbing, relevant and SEO-friendly\n\nWrite a blog body (400-500 words) that:\n\nOpens with a hook to capture attention.\n\nClearly explains the topic with depth and accuracy .\n\nIncludes relevant examples, data, or case studies.\n\nUses clear subheadings for structure .\n\nEnds with a strong conclusion or call to action.\n\nReturns the result strictly in the following JSON format:\n{\n\"title\": \"<your blog title here>\",\n\"body\": \"<your blog content here with appropriate line breacks and subheadings>\"\n}\n\nDo not include additional explanations, commentarry, explanations, markdown, or any other formatting outside this JSON.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        736,
+        32
+      ],
+      "id": "bc625ab7-4735-4b3f-b0b5-87ee853d67eb",
+      "name": "Blogwriting"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"required\": [\"title\", \"body\"],\n\t\"additioonalProperties\": \"false\",\n\t\t\t\"properties\":{\n\t\t\"title\": {\"type\": \"string\", \"maxlength\": 120},\n\t\t\"body\": {\"type\": \"string\"}\n\t\t\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1392,
+        208
+      ],
+      "id": "215ebe3a-9d82-4915-81d7-99f3be4a7879",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        256
+      ],
+      "id": "71a414ad-3920-4636-973f-d717f3283085",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u3kVcoWs0n2rLQiu",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this knowledge base to answer questions from the user",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        },
+        "topK": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        528
+      ],
+      "id": "406572f9-7b88-4ec8-833f-3810d2b19b24",
+      "name": "Simple Vector Store3"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert cold email copyywriter skilled in persuasive, high-conversion outreach. Write a short, attention-grabbing email that motivates the reciepent to take action while keeping the tone friendly, proffesional, and relevant to their industry,\n\nInstructions:\n\nCreate a title (maximium 10 words) that is catchy and alligned with the reciepent's goals or pain points.\n\nCreate a body (60- 120 words) that is:\n\nBriefly, introduces yourself or your company. Highlights a clear pain point or opputinity for the recipient. Ends with a friendly, action-oriented closing, Returns the response strictly in the following JSON format:\n{\n\t\"title\": \"<yor title here>\",\n\t\"body\": \"<your email body here witb appropriate line breaks>\"\n}\n\nDo not include commentarry, explanations, markdown, or any other formatting outside this JSON.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        1216,
+        32
+      ],
+      "id": "163888d8-8ab0-4165-b259-7681dcc23e57",
+      "name": "ColdEmail"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Simple Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Simple Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Simple Vector Store3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Copywriting",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Copywriting",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Copywriting",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Copy a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Blogwriting",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Blogwriting",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Vector Store2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Blogwriting",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copywriting": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "ColdEmail",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ColdEmail",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Vector Store3": {
+      "ai_tool": [
+        [
+          {
+            "node": "ColdEmail",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blogwriting": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ColdEmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fb86cbf0-476c-4859-98c9-1c45953f5750",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1d08d1060bffb60a4b002e9f5295f5fa1f502657cb4a3698a8edb9a4032bd5f9"
+  },
+  "id": "LfZpXKsQhYwh9oRS",
+  "tags": []
+}
